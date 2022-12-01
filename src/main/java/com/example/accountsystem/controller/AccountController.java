@@ -17,7 +17,8 @@ public class AccountController {
     private final RedisTestService redisTestService;
 
     @PostMapping("/account")
-    public String createAccount(@RequestBody @Valid CreateAccount.Request request) {
+    public CreateAccount.Response createAccount(
+            @RequestBody @Valid CreateAccount.Request request) {
         accountService.createAccount();
         return "success";
     }
