@@ -436,4 +436,54 @@ class TransactionServiceTest {
         // then
         assertEquals(ErrorCode.TOO_OLD_ORDER_TO_CANCEL, exception.getErrorCode());
     }
+
+    @Test
+    void successQueryTransaction() {
+    	// given
+        AccountUser user = AccountUser.builder().id(12L).name("Pobi").build();
+
+        Account account = Account.builder()
+                .id(1L)
+                .accountUser(user)
+                .accountNumber("1000000012")
+                .accountStatus(AccountStatus.IN_USE)
+                .balance(10000L).build();
+
+        Transaction transaction = Transaction.builder()
+                .account(account)
+                .transactionType(USE)
+                .transactionResultType(S)
+                .amount(CANCEL_AMOUNT)
+                .balanceSnapshot(9000L)
+                .transactionId("transactionId")
+                .transactedAt(LocalDateTime.now().minusYears(1))
+                .build();
+
+        given(transactionRepository.findByTransactionId(anyString()))
+                .willReturn(Optional.of(transaction));
+
+    	// when
+        TransactionDto transactionDto = transactionService.queryTransaction("trxId");
+
+        // then
+        assertEquals(USE, transactionDto.getTransactionType());
+        assertEquals(S, transactionDto.getTransactionResultType());
+        assertEquals(CANCEL_AMOUNT, transactionDto.getAmount());
+        assertEquals("transactionId", transactionDto.getTransactionId());
+    }
+
+    @Test
+    @DisplayName("원 거래 없음 - 거래 조회 실패")
+    void queryTransactionFailed_TransactionNotFound() {
+        // given
+        given(transactionRepository.findByTransactionId(anyString()))
+                .willReturn(Optional.empty());
+
+        // when
+        AccountException exception = assertThrows(AccountException.class,
+                () -> transactionService.queryTransaction("transactionId"));
+
+        // then
+        assertEquals(ErrorCode.TRANSACTION_NOT_FOUND, exception.getErrorCode());
+    }
 }
