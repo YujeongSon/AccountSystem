@@ -1,5 +1,6 @@
 package com.example.accountsystem.exception;
 
+import com.example.accountsystem.type.ErrorCode;
 import lombok.*;
 
 @Getter

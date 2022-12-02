@@ -1,5 +1,6 @@
 package com.example.accountsystem.domain;
 
+import com.example.accountsystem.type.AccountStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
