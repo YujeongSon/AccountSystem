@@ -1,6 +1,7 @@
 package com.example.accountsystem.controller;
 
 import com.example.accountsystem.domain.Account;
+import com.example.accountsystem.dto.AccountDto;
 import com.example.accountsystem.dto.CreateAccount;
 import com.example.accountsystem.service.AccountService;
 import com.example.accountsystem.service.RedisTestService;
@@ -18,9 +19,13 @@ public class AccountController {
 
     @PostMapping("/account")
     public CreateAccount.Response createAccount(
-            @RequestBody @Valid CreateAccount.Request request) {
-        accountService.createAccount(request.getUserId(), request.getInitialBalance());
-        return "success";
+            @RequestBody @Valid CreateAccount.Request request
+    ) {
+        return CreateAccount.Response.from(
+                accountService.createAccount(
+                    request.getUserId(), request.getInitialBalance()
+                )
+        );
     }
 
     @GetMapping("/get-lock")
