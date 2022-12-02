@@ -2,6 +2,8 @@ package com.example.accountsystem.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class CreateAccount {
@@ -9,7 +11,12 @@ public class CreateAccount {
     @Getter
     @Setter
     public static class Request {
+        @NotNull
+        @Min(1)
         private Long userId;
+
+        @NotNull
+        @Min(100)
         private Long initialBalance;
     }
 
