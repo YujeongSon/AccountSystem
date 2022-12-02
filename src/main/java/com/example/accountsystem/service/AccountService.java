@@ -2,12 +2,18 @@ package com.example.accountsystem.service;
 
 import com.example.accountsystem.domain.Account;
 import com.example.accountsystem.domain.AccountUser;
+import com.example.accountsystem.exception.AccountException;
 import com.example.accountsystem.repository.AccountRepository;
 import com.example.accountsystem.repository.AccountUserRepository;
+import com.example.accountsystem.type.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
+import java.time.LocalDateTime;
+
+import static com.example.accountsystem.type.AccountStatus.IN_USE;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +27,23 @@ public class AccountService {
      * 계좌를 저장하고, 그 정보를 넘긴다.
      */
     @Transactional
-    public void createAccount(Long userId, Long initialBalance) {
+    public Account createAccount(Long userId, Long initialBalance) {
         AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User Not Found"));// 해당 사용자가 없으면 예외 발생
+                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));// 해당 사용자가 없으면 예외 발생
+
+        String newAccountNumber = accountRepository.findFirstByOrderByIdDesc() // 가장 최근에 생성된 account를 가져온다.
+                .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "") // 문자열으로 변환
+                .orElse("1000000000"); // account가 하나도 없는 경우(처음 생성)
+
+        return accountRepository.save(
+                Account.builder()
+                        .accountUser(accountUser)
+                        .accountNumber(newAccountNumber)
+                        .accountStatus(IN_USE)
+                        .balance(initialBalance)
+                        .registeredAt(LocalDateTime.now())
+                        .build()
+        );
     }
 
     @Transactional
