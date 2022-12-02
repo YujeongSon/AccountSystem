@@ -7,7 +7,6 @@ import com.example.accountsystem.dto.DeleteAccount;
 import com.example.accountsystem.service.AccountService;
 import com.example.accountsystem.service.RedisTestService;
 import com.example.accountsystem.type.AccountStatus;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
