@@ -79,6 +79,8 @@ public class AccountService {
         account.setAccountStatus(UNREGISTERED);
         account.setUnRegisteredAt(LocalDateTime.now());
 
+        accountRepository.save(account); // for test <- 원래는 없어도되는 코드
+
         return AccountDto.fromEntity(account);
     }
 
