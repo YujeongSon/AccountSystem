@@ -1,7 +1,7 @@
 package com.example.accountsystem.controller;
 
 import com.example.accountsystem.domain.Account;
-import com.example.accountsystem.dto.AccountDto;
+import com.example.accountsystem.dto.AccountInfo;
 import com.example.accountsystem.dto.CreateAccount;
 import com.example.accountsystem.dto.DeleteAccount;
 import com.example.accountsystem.service.AccountService;
@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +40,19 @@ public class AccountController {
                         request.getUserId(), request.getAccountNumber()
                 )
         );
+    }
+
+    @GetMapping("/account")
+    public List<AccountInfo> getAccountsByUserId(
+            @RequestParam("user_id") Long userId
+    ) {
+        return accountService.getAccountsByUserId(userId)
+                .stream().map(
+                        accountDto -> AccountInfo.builder()
+                        .accountNumber(accountDto.getAccountNumber())
+                        .balance(accountDto.getBalance())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/get-lock")
