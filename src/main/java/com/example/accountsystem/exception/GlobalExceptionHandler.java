@@ -3,6 +3,7 @@ package com.example.accountsystem.exception;
 import com.example.accountsystem.dto.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,6 +19,13 @@ public class GlobalExceptionHandler {
         log.error("{} is occurred.", e.getErrorCode());
 
         return new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        log.error("MethodArgumentNotValidException is occurred.", e);
+
+        return new ErrorResponse(INVALID_REQUEST, INVALID_REQUEST.getDescription());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
